@@ -18,7 +18,7 @@ class UserUseCase {
 
         const existingUser = await this.userRepository.findByEmail(userData.email);
         if (existingUser) {
-            throw new Error('A user with this email already exists');
+            throw new Error('A user with this email already exists, no es god');
         }
 
         const userModel = new User(userData);
