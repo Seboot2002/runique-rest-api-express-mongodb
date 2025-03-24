@@ -52,6 +52,25 @@ class UserController {
         }
     }
 
+    async logoutUser(req, res) {
+
+        try {
+            
+            res.status(201).send("Token erased")
+
+        } catch (error) {
+            if (error.message === 'A user with this email already exists') {
+                res.status(409).json({ error: error.message });
+            }
+            else if (error.message === "Email and password are required"){
+                res.status(409).json({ error: error.message });
+            } 
+            else {
+                res.status(400).json({ error: error.message });
+            }
+        }
+    }
+
     async getData(req, res) {
 
         try {

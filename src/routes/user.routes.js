@@ -16,6 +16,8 @@ module.exports = (db) => {
 
     router.get("/", verifyToken, (req, res) => userController.getData(req, res));
 
+    router.get("/logout", verifyToken, (req, res) => userController.logoutUser(req, res));
+
     router.put("/", verifyToken, (req, res) => userController.updateUser(req, res));
 
     router.delete("/", verifyToken, (req, res) => userController.deleteUser(req, res));
