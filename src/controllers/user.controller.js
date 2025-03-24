@@ -30,9 +30,13 @@ class UserController {
     async loginUser(req, res) {
 
         try {
-            let userToken = await this.userUseCase.loginUser(req.body);
+            let loginResult = await this.userUseCase.loginUser(req.body);
 
-            res.status(201).json({token: userToken});
+            res.status(201).json({
+                accessToken: loginResult.token, 
+                refreshToken: loginResult.token, 
+                userId: loginResult.userId
+            });
 
         } catch (error) {
             if (error.message === 'A user with this email already exists') {

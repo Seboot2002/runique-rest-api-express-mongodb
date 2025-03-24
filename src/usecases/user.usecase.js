@@ -49,7 +49,10 @@ class UserUseCase {
                 expiresIn: '2h'
             });
 
-            return token;
+            return {
+                token: token,
+                userId: existingUser._id
+            };
         }
         else
         {
