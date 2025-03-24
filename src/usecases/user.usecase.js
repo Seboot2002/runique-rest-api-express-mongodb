@@ -42,16 +42,20 @@ class UserUseCase {
             throw new Error('User do not exist');
         }
 
+        const expiresInSeconds = 2 * 60 * 60;
+        const expiresAtMillis = Date.now() + expiresInSeconds * 1000
+
         const passwordVerified = await CompareHash(loginData.password, existingUser.password);
         if (passwordVerified) {
 
             const token = await jwt.sign({ id: existingUser._id }, "myTotallySecretKey", {
-                expiresIn: '2h'
+                expiresIn: expiresInSeconds
             });
 
             return {
                 token: token,
-                userId: existingUser._id
+                userId: existingUser._id,
+                accessTokenExpirationTimestamp: expiresAtMillis
             };
         }
         else

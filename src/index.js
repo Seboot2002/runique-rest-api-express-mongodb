@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config()
 const app = require("./config/app");
 const { connect, getDb } = require('./services/mongoService.js');
 

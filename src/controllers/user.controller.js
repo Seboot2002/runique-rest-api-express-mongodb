@@ -35,6 +35,7 @@ class UserController {
             res.status(201).json({
                 accessToken: loginResult.token, 
                 refreshToken: loginResult.token, 
+                accessTokenExpirationTimestamp: loginResult.accessTokenExpirationTimestamp,
                 userId: loginResult.userId
             });
 
