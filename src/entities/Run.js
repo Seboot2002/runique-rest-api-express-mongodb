@@ -1,6 +1,6 @@
 class RunModel {
 
-    constructor(
+    constructor({
         id,
         dateTimeUtc, 
         durationMillis, 
@@ -12,7 +12,8 @@ class RunModel {
         totalElevationMeters, 
         mapPictureUrl, 
         avgHeartRate, 
-        maxHeartRate) {
+        maxHeartRate
+    }) {
 
             this.id = id;
             this.dateTimeUtc = dateTimeUtc;
@@ -28,3 +29,5 @@ class RunModel {
             this.maxHeartRate = maxHeartRate;
     }
 }
+
+module.exports = RunModel;
