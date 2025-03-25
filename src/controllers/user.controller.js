@@ -1,9 +1,10 @@
 const UserUseCase = require("../usecases/user.usecase");
 
 class UserController {
-    constructor(userRepository) {
+    constructor(userRepository, refreshTokenRepository) {
         this.userRepository = userRepository;
-        this.userUseCase = new UserUseCase(this.userRepository);
+        this.refreshTokenRepository = refreshTokenRepository
+        this.userUseCase = new UserUseCase(this.userRepository, this.refreshTokenRepository);
     }
 
     async createUser(req, res) {
@@ -34,7 +35,7 @@ class UserController {
 
             res.status(201).json({
                 accessToken: loginResult.token, 
-                refreshToken: loginResult.token, 
+                refreshToken: loginResult.refreshToken, 
                 accessTokenExpirationTimestamp: loginResult.accessTokenExpirationTimestamp,
                 userId: loginResult.userId
             });
@@ -55,7 +56,11 @@ class UserController {
     async logoutUser(req, res) {
 
         try {
-            
+            const userId = req.token_usuarioId;
+            const isTokenDeleted = await this.userUseCase.logoutUser(userId);
+
+            if(!isTokenDeleted) return res.send("Token not erased")
+
             res.status(201).send("Token erased")
 
         } catch (error) {
@@ -63,6 +68,32 @@ class UserController {
                 res.status(409).json({ error: error.message });
             }
             else if (error.message === "Email and password are required"){
+                res.status(409).json({ error: error.message });
+            } 
+            else {
+                res.status(400).json({ error: error.message });
+            }
+        }
+    }
+
+    async refreshToken(req, res) {
+
+        try {
+            let refreshTokenResult = await this.userUseCase.refreshToken(req.body);
+
+            if(!refreshTokenResult) return res.sendStatus(403);
+
+            res.status(201).json({
+                accessToken: refreshTokenResult.accessToken,
+                refreshToken: refreshTokenResult.refreshToken,
+                expirationTimestamp: refreshTokenResult.expirationTimestamp
+            });
+
+        } catch {
+            if (error.message === 'That refresh token already exists') {
+                res.status(409).json({ error: error.message });
+            }
+            else if (error.message === "parameters are required"){
                 res.status(409).json({ error: error.message });
             } 
             else {

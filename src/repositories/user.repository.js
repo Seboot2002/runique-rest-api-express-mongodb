@@ -17,7 +17,7 @@ class UserRepository {
         const userId = result.insertedId;
 
         const userFound = await this.collection.findOne({
-            _id: userId
+            _id: ObjectId.createFromHexString(userId)
         });
 
         return userFound;
@@ -63,7 +63,8 @@ class UserRepository {
     }
 
     async deleteById(userId) {
-        const result = await this.collection.deleteOne({ _id: ObjectId.createFromHexString(userId) });
+        const result = await this.collection.deleteOne({ userId: ObjectId.createFromHexString(userId) });
+        
         return result.deletedCount > 0;
     }
 }
