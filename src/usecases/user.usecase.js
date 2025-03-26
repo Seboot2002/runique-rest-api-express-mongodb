@@ -109,11 +109,11 @@ class UserUseCase {
         jwt.verify(refreshToken.token, "myTotallySecretRefreshKey", async function(err, decoded) {
             
             if (err) {
-                await refreshTokenRepository.deleteById(refreshToken._id);
+                await this.refreshTokenRepository.deleteById(refreshToken._id);
                 return res.status(403).json({ message: 'Refresh token expirado o inválido. Inicia sesión nuevamente.' });
             }
 
-            await refreshTokenRepository.deleteById(refreshToken._id);
+            await this.refreshTokenRepository.deleteById(refreshToken._id);
 
             // Tiempo de expiracion
             const tokenExpiresInSeconds = 2 * 60 * 60;
