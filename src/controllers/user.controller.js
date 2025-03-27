@@ -81,7 +81,7 @@ class UserController {
         try {
             let refreshTokenResult = await this.userUseCase.refreshToken(req.body);
 
-            if(!refreshTokenResult) return res.sendStatus(403);
+            if(!refreshTokenResult) return res.status(403).send("No se creo el refreshToken adecuadamente");
 
             res.status(201).json({
                 accessToken: refreshTokenResult.accessToken,
@@ -89,7 +89,7 @@ class UserController {
                 expirationTimestamp: refreshTokenResult.expirationTimestamp
             });
 
-        } catch {
+        } catch (error) {
             if (error.message === 'That refresh token already exists') {
                 res.status(409).json({ error: error.message });
             }

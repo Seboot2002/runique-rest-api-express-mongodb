@@ -99,46 +99,52 @@ class UserUseCase {
     }
 
     async refreshToken(refreshTokenModel) {
-        
+
         const refreshToken = await this.refreshTokenRepository.findByToken(refreshTokenModel.refreshToken);
 
         if(!refreshToken) {
             throw new Error("Token not found in database")
         }
-
-        jwt.verify(refreshToken.token, "myTotallySecretRefreshKey", async function(err, decoded) {
-            
-            if (err) {
-                await this.refreshTokenRepository.deleteById(refreshToken._id);
-                return res.status(403).json({ message: 'Refresh token expirado o inválido. Inicia sesión nuevamente.' });
-            }
+        
+        try {
+            const decodedUserIdObj = await jwt.verify(refreshToken.token, "myTotallySecretRefreshKey");
+            const userId = decodedUserIdObj.id;
 
             await this.refreshTokenRepository.deleteById(refreshToken._id);
 
-            // Tiempo de expiracion
             const tokenExpiresInSeconds = 2 * 60 * 60;
             const refreshTokenExpiresInSeconds = 7 * 24 * 60 * 60;
 
-            const tokenExpiresAtMillis = Date.now() + tokenExpiresInSeconds * 1000
-            const refreshTokenExpiresAtMillis = Date.now() + refreshTokenExpiresInSeconds * 1000
+            const tokenExpiresAtMillis = Date.now() + tokenExpiresInSeconds * 1000;
 
-            // Generar nuevos tokens
-            const newAccessToken = await jwt.sign({ id: decoded }, "myTotallySecretKey", {
+            const newAccessToken = jwt.sign({ id: userId }, "myTotallySecretKey", {
                 expiresIn: tokenExpiresInSeconds
             });
-            const newRefreshToken = await jwt.sign({ id: decoded }, "myTotallySecretRefreshKey", {
+
+            const newRefreshToken = jwt.sign({ id: userId }, "myTotallySecretRefreshKey", {
                 expiresIn: refreshTokenExpiresInSeconds
             });
 
-            // Guardar el nuevo refresh token en MongoDB
-            await this.refreshTokenRepository.create(refreshTokenModel)
+            
+            const newRefreshTokenModel = new RefreshToken({
+                token: newRefreshToken,
+                userId: userId
+            });
+
+            console.log("newRefreshTokenModel", newRefreshTokenModel)
+
+            await this.refreshTokenRepository.create(newRefreshTokenModel);
 
             return {
                 accessToken: newAccessToken,
                 refreshToken: newRefreshToken,
                 expirationTimestamp: tokenExpiresAtMillis
             };
-        });
+            
+        } catch (error) {
+            await this.refreshTokenRepository.deleteById(refreshToken._id);
+            throw new Error("Refresh token expirado o inválido. Inicia sesión nuevamente.");
+        }
 
     }
 
