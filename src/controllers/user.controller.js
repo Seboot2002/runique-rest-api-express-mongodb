@@ -86,7 +86,7 @@ class UserController {
             res.status(201).json({
                 accessToken: refreshTokenResult.accessToken,
                 refreshToken: refreshTokenResult.refreshToken,
-                expirationTimestamp: refreshTokenResult.expirationTimestamp
+                expirationTimeStamp: refreshTokenResult.expirationTimestamp
             });
 
         } catch (error) {
