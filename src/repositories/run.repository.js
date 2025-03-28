@@ -11,24 +11,22 @@ class RunRepository {
     async create(run, userId) {
 
         const result = await this.collection.insertOne({
-            _id: run.id,
-            dateTimeUtc: run.dateTimeUtc, 
+            _id: ObjectId.createFromHexString(run.id),
             durationMillis: run.durationMillis, 
             distanceMeters: run.distanceMeters, 
+            epochMillis: run.epochMillis, 
             lat: run.lat, 
             long: run.long, 
             avgSpeedKmh: run.avgSpeedKmh, 
             maxSpeedKmh: run.maxSpeedKmh, 
-            totalElevationMeters: run.totalElevationMeters, 
-            mapPictureUrl: run.mapPictureUrl, 
-            avgHeartRate: run.avgHeartRate, 
-            maxHeartRate: run.maxHeartRate,
+            totalElevationMeters: run.totalElevationMeters,
             userId: ObjectId.createFromHexString(userId)
         });
 
-        console.log("aaa", result)
+        console.log("resultCreateRun", result)
 
         const runId = result.insertedId;
+        console.log("runId", runId);
 
         const runFound = await this.collection.findOne({
             _id: runId

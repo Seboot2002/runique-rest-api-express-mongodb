@@ -10,15 +10,15 @@ class RunController {
         try {
             
             const userId = req.token_usuarioId;
-            const runData = JSON.parse(req.body.RUN_DATA);
+            const runData = req.body.RUN_DATA;
 
             console.log("req body:", req.body)
 
-            if (!req.file || !req.body.RUN_DATA) {
+            if (/*!req.file || */!req.body.RUN_DATA) {
                 return res.status(400).json({ error: "Faltan datos" });
             }
 
-            runData.mapPictureUrl = `public/uploads/${req.file.filename}`;
+            //runData.mapPictureUrl = `public/uploads/${req.file.filename}`;
 
             let run = await this.runUseCase.createRun(runData, userId);
             
