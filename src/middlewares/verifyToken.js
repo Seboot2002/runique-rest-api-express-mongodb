@@ -2,11 +2,13 @@ const jwt = require("jsonwebtoken");
 
 async function verifyToken(req, res, next){
 
-    const token = await req.headers['authorization']
+    const authHeader = await req.headers['authorization']
 
-    if(!token){
-        return res.status(403).send("No existe un token");
+    if(!authHeader || !authHeader.startsWith("Bearer ")){
+        return res.status(403).send("No existe un token o es inválido");
     }
+    
+    const token = authHeader.split(" ")[1];
     
     try {
         const decoded = await jwt.verify(token, "myTotallySecretKey");
