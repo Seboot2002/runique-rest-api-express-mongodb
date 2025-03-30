@@ -1,4 +1,5 @@
 const RunUseCase = require("../usecases/run.usecase");
+const googleDriveUploader = require("../services/googleDriveUploader")
 
 class RunController {
     constructor(runRepository) {
@@ -14,11 +15,23 @@ class RunController {
 
             console.log("req body:", req.body)
 
-            if (/*!req.file || */!req.body.RUN_DATA) {
+            if (!req.body.RUN_DATA) {
                 return res.status(400).json({ error: "Faltan datos" });
             }
+            
 
-            //runData.mapPictureUrl = `public/uploads/${req.file.filename}`;
+            if (req.file) {
+                const fileUrl = await googleDriveUploader(req.file.buffer, req.file.originalname, req.file.mimetype);
+                if (!fileUrl) {
+                    return res.status(500).json({ error: "Error al subir la imagen a Google Drive" });
+                }
+
+                // req.file.filename se usa en diskstorage
+                // req.file.originalname se usa en memorystorage
+                runData.mapPictureUrl = fileUrl;
+            } else {
+                runData.mapPictureUrl = null;
+            }
 
             let run = await this.runUseCase.createRun(runData, userId);
             

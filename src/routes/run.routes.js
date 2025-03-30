@@ -13,7 +13,7 @@ module.exports = (db) => {
     const runRepository = new RunRepository(db);
     const runController = new RunController(runRepository);
 
-    router.post("/", verifyToken/*, upload.single("MAP_PICTURE")*/, (req, res) => runController.createRun(req, res));
+    router.post("/", verifyToken, upload.single("MAP_PICTURE"), (req, res) => runController.createRun(req, res));
 
     router.get("/", verifyToken, (req, res) => runController.getRunsData(req, res));
 

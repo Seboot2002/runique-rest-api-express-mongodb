@@ -2,9 +2,9 @@ class RunModel {
 
     constructor({
         id,
+        dateTimeUtc, 
         durationMillis, 
         distanceMeters, 
-        epochMillis, 
         lat, 
         long, 
         avgSpeedKmh, 
@@ -13,9 +13,9 @@ class RunModel {
     }) {
 
         this.id = id;
+        this.dateTimeUtc = dateTimeUtc;
         this.durationMillis = durationMillis;
         this.distanceMeters = distanceMeters;
-        this.epochMillis = epochMillis;
         this.lat = lat;
         this.long = long;
         this.avgSpeedKmh = avgSpeedKmh;

@@ -12,9 +12,9 @@ class RunRepository {
 
         const result = await this.collection.insertOne({
             _id: ObjectId.createFromHexString(run.id),
+            dateTimeUtc: run.dateTimeUtc, 
             durationMillis: run.durationMillis, 
             distanceMeters: run.distanceMeters, 
-            epochMillis: run.epochMillis, 
             lat: run.lat, 
             long: run.long, 
             avgSpeedKmh: run.avgSpeedKmh, 
