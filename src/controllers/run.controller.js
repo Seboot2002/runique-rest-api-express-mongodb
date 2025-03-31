@@ -19,7 +19,7 @@ class RunController {
 
             const runData = JSON.parse(req.body.RUN_DATA);
             
-            if (req.file) {
+            if (req.body.MAP_PICTURE && req.file) {
                 const fileUrl = await googleDriveUploader(req.file.buffer, req.file.originalname, req.file.mimetype);
                 if (!fileUrl) {
                     return res.status(500).json({ error: "Error al subir la imagen a Google Drive" });

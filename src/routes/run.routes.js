@@ -1,9 +1,8 @@
 const express = require("express");
 const verifyToken = require("../middlewares/verifyToken");
-const multer = require("multer");
 const router = express.Router();
 
-const upload = multer()
+const upload = require("../services/multer");
 
 module.exports = (db) => {
 
