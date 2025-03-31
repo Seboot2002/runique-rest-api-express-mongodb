@@ -12,14 +12,15 @@ class RunRepository {
 
         const result = await this.collection.insertOne({
             _id: ObjectId.createFromHexString(run.id),
+            dateTimeUtc: run.dateTimeUtc,
             durationMillis: run.durationMillis, 
-            distanceMeters: run.distanceMeters, 
+            distanceMeters: run.distanceMeters,
             lat: run.lat, 
             long: run.long, 
             avgSpeedKmh: run.avgSpeedKmh, 
             maxSpeedKmh: run.maxSpeedKmh, 
             totalElevationMeters: run.totalElevationMeters,
-            epochMillis: run.epochMillis, 
+            mapPictureUrl: run.mapPictureUrl, 
             userId: ObjectId.createFromHexString(userId)
         });
 
@@ -29,7 +30,18 @@ class RunRepository {
             _id: runId
         });
 
-        return runFound;
+        return {
+            id: runFound._id,
+            dateTimeUtc: runFound.dateTimeUtc,
+            durationMillis: runFound.durationMillis,
+            distanceMeters: runFound.distanceMeters,
+            lat: runFound.lat,
+            long: runFound.long,
+            avgSpeedKmh: runFound.avgSpeedKmh,
+            maxSpeedKmh: runFound.maxSpeedKmh,
+            totalElevationMeters: runFound.totalElevationMeters,
+            mapPictureUrl: runFound.mapPictureUrl
+        };
     }
 
     async findById(runId) {
@@ -52,7 +64,20 @@ class RunRepository {
 
         const runsArray = await cursor.toArray();
 
-        return runsArray;
+        const formattedRuns = runsArray.map(run => ({
+            id: run._id.toString(),
+            dateTimeUtc: run.dateTimeUtc,
+            durationMillis: run.durationMillis,
+            distanceMeters: run.distanceMeters,
+            lat: run.lat,
+            long: run.long,
+            avgSpeedKmh: run.avgSpeedKmh,
+            maxSpeedKmh: run.maxSpeedKmh,
+            totalElevationMeters: run.totalElevationMeters,
+            mapPictureUrl: run.mapPictureUrl
+        }));
+
+        return formattedRuns;
     }
 
     async findByEmail(email) {

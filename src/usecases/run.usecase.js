@@ -14,6 +14,10 @@ class RunUseCase {
 
         const runModel = new Run(runData);
 
+        const dateTimeUtc = new Date().toISOString();
+        
+        runModel.dateTimeUtc = dateTimeUtc;
+
         const finalRun = await this.runRepository.create(runModel, userId);
         return finalRun;
     }
