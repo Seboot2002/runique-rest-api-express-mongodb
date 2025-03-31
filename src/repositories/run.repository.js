@@ -23,10 +23,7 @@ class RunRepository {
             userId: ObjectId.createFromHexString(userId)
         });
 
-        console.log("resultCreateRun", result)
-
         const runId = result.insertedId;
-        console.log("runId", runId);
 
         const runFound = await this.collection.findOne({
             _id: runId

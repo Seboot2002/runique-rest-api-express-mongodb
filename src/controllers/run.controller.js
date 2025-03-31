@@ -11,15 +11,14 @@ class RunController {
         try {
             
             const userId = req.token_usuarioId;
-            const runData = req.body.RUN_DATA;
-
-            console.log("req body:", req.body)
-
-            if (!req.body.RUN_DATA) {
-                return res.status(400).json({ error: "Faltan datos" });
-            }
+            console.log("req body:", req.body);
             
+            if (!req.body.RUN_DATA) {
+                return res.status(400).json({ error: "RUN_DATA no recibido" });
+            }
 
+            const runData = JSON.parse(req.body.RUN_DATA);
+            
             if (req.file) {
                 const fileUrl = await googleDriveUploader(req.file.buffer, req.file.originalname, req.file.mimetype);
                 if (!fileUrl) {
