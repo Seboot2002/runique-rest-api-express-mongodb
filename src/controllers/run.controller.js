@@ -17,7 +17,9 @@ class RunController {
                 return res.status(400).json({ error: "RUN_DATA no recibido" });
             }
 
-            const runData = JSON.parse(req.body.RUN_DATA);
+            const runData = typeof req.body.RUN_DATA == "string"
+            ? JSON.parse(req.body.RUN_DATA)
+            : req.body.RUN_DATA;
             
             if (req.body.MAP_PICTURE && req.file) {
                 const fileUrl = await googleDriveUploader(req.file.buffer, req.file.originalname, req.file.mimetype);
@@ -96,7 +98,8 @@ class RunController {
 
         try {
             const userId = req.token_usuarioId;
-            const check = await this.runUseCase.deleteRun(userId);
+            const runId = req.query.id;
+            const check = await this.runUseCase.deleteRun(runId);
 
             if (check){
                 res.status(201).send("Run deleted");

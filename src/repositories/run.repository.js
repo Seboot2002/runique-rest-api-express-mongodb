@@ -56,15 +56,11 @@ class RunRepository {
 
     async findAllById(userId) {
 
-        const cursor = await this.collection.find({ userId: ObjectId.createFromHexString(userId) }, {
-            projection: {
-                _id: 0
-            }
-        });
+        const cursor = await this.collection.find({ userId: ObjectId.createFromHexString(userId) });
 
         const runsArray = await cursor.toArray();
 
-        const formattedRuns = runsArray.map(run => ({
+        const formattedRuns = await runsArray.map(run => ({
             id: run._id.toString(),
             dateTimeUtc: run.dateTimeUtc,
             durationMillis: run.durationMillis,
@@ -107,8 +103,8 @@ class RunRepository {
         return result.matchedCount > 0;
     }
 
-    async deleteById(userId) {
-        const result = await this.collection.deleteOne({ _id: ObjectId.createFromHexString(userId) });
+    async deleteById(runId) {
+        const result = await this.collection.deleteOne({ _id: ObjectId.createFromHexString(runId) });
         return result.deletedCount > 0;
     }
 }
