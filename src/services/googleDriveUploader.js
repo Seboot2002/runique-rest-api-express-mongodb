@@ -1,21 +1,21 @@
-const { google } = require('googleapis')
+const { google } = require('googleapis');
+const { Readable } = require('stream');
 require('dotenv').config();
 
-const oauth2Client = new google.auth.GoogleAuth({
+const auth = new google.auth.GoogleAuth({
     credentials: {
         client_email: process.env.DRIVE_CLIENT_EMAIL,
         client_id: process.env.DRIVE_CLIENT_ID,
-        private_key: process.env.DRIVE_PRIVATE_KEY,
+        private_key: process.env.DRIVE_PRIVATE_KEY.replace(/\\n/g, '\n'),
     },
     scopes:[
         'https://www.googleapis.com/auth/drive.file'
     ]
-}
-);
+});
 
 const drive = google.drive({
     version: 'v3',
-    auth: oauth2Client
+    auth: auth
 });
 
 /**
@@ -28,12 +28,12 @@ async function uploadToGoogleDrive(fileBuffer, fileName, mimeType) {
     try {
         const fileMetadata = {
             name: fileName,
-            parents: ["Runique_folder"],
+            parents: [process.env.DRIVE_FOLDER_ID],
         };
 
         const media = {
             mimeType,
-            body: fileBuffer,
+            body: Readable.from(fileBuffer), // buffer a stream
         };
 
         const response = await drive.files.create({
